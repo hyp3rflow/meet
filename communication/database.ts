@@ -127,7 +127,7 @@ export class Database {
     if (!participants[userId]) {
       const { error } = await this.#client.from("rooms").update({
         participants: { ...participants, [userId]: true },
-      });
+      }).eq("id", roomId);
       if (error) {
         throw new Error(error.message);
       }
