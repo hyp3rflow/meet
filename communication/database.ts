@@ -82,9 +82,7 @@ export class Database {
     }));
   }
 
-  async getRoomInfo(roomId: number): Promise<{ name: string;
-    owner: number;
-}> {
+  async getRoomInfo(roomId: number): Promise<{ name: string; owner: number }> {
     const { data, error } = await this.#client.from("rooms")
       .select("name,user_id")
       .eq("id", roomId);
@@ -116,10 +114,12 @@ export class Database {
     );
   }
 
-  async updateRoomParticipants({ roomId, userId }: { roomId: number;
-    userId: number;
-  }) {
-    const { data, error } = await this.#client.from("rooms").select("participants").eq("id", roomId);
+  async updateRoomParticipants(
+    { roomId, userId }: { roomId: number; userId: number },
+  ) {
+    const { data, error } = await this.#client.from("rooms").select(
+      "participants",
+    ).eq("id", roomId);
     if (error) {
       throw new Error(error.message);
     }
@@ -133,7 +133,7 @@ export class Database {
       }
     }
     return { ...participants, [userId]: true };
-}
+  }
 
   async ensureRoom({ name, userId }: { name: string; userId: number }) {
     const insert = await this.#client.from("rooms").insert([{

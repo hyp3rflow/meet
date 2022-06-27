@@ -39,7 +39,7 @@ export default function Chat(
         }
         case "participant": {
           setVote((v) => {
-            if (!v.some(v => v.name === msg.from.name)) {
+            if (!v.some((v) => v.name === msg.from.name)) {
               return [...v, msg.from];
             }
             return v;
@@ -64,7 +64,7 @@ export default function Chat(
 
   const initialize = () => {
     server.sendInitialize(roomId);
-  }
+  };
 
   return (
     <>
@@ -121,13 +121,15 @@ function ChatInput({ isOwner, onSend, initialize }: {
       >
         👎🏻 Disagree :(
       </button>
-      {isOwner && 
-      <button
-        onClick={initialize}
-        class={tw`bg-gray-200 py-2 px-4 rounded-full`}
-      >
-        Initialize!
-      </button>}
+      {isOwner &&
+        (
+          <button
+            onClick={initialize}
+            class={tw`bg-gray-200 py-2 px-4 rounded-full`}
+          >
+            Initialize!
+          </button>
+        )}
     </div>
   );
 }

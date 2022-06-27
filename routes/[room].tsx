@@ -29,15 +29,21 @@ export const handler: Handler<Data> = async (
   if (isNaN(+ctx.params.room)) {
     return new Response("Invalid room id", { status: 400 });
   }
-  const participants = await database.updateRoomParticipants({roomId: +ctx.params.room, userId: user.userId});
+  await database.updateRoomParticipants({
+    roomId: +ctx.params.room,
+    userId: user.userId,
+  });
   const channel = new RoomChannel(+ctx.params.room);
   channel.sendParticipant({
     from: {
       name: user.userName,
       avatarUrl: user.avatarUrl,
-    }
+    },
   });
-  const { name, owner } = await database.getRoomInfo(+ctx.params.room);
+  const [{ name, owner }, participants] = await Promise.all([
+    database.getRoomInfo(+ctx.params.room),
+    database.getRoomParticipants(+ctx.params.room),
+  ]);
   return ctx.render({
     roomName: name,
     isOwner: owner === user.userId,

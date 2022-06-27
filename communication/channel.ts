@@ -31,8 +31,12 @@ export class RoomChannel {
     this.#channel.close();
   }
 
-  sendVote(message: Omit<
-    RoomVoteChannelMessage, "kind">) {
+  sendVote(
+    message: Omit<
+      RoomVoteChannelMessage,
+      "kind"
+    >,
+  ) {
     this.#channel.postMessage({
       kind: "vote",
       ...message,
