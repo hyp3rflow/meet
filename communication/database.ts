@@ -116,6 +116,25 @@ export class Database {
     );
   }
 
+  async updateRoomParticipants({ roomId, userId }: { roomId: number;
+    userId: number;
+  }) {
+    const { data, error } = await this.#client.from("rooms").select("participants").eq("id", roomId);
+    if (error) {
+      throw new Error(error.message);
+    }
+    const participants = data[0].participants ?? {};
+    if (!participants[userId]) {
+      const { error } = await this.#client.from("rooms").update({
+        participants: { ...participants, [userId]: true },
+      });
+      if (error) {
+        throw new Error(error.message);
+      }
+    }
+    return { ...participants, [userId]: true };
+}
+
   async ensureRoom({ name, userId }: { name: string; userId: number }) {
     const insert = await this.#client.from("rooms").insert([{
       name,
